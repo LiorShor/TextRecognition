@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Text recognition</string>
+    <string name="title_activity_imageanalysis">ImageanalysisActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+    <string name="display_detected_text_from_image">Display detected text from image</string>
+    <string name="capture_image">Capture image</string>
+    <string name="detect_image">Detect image</string>
+</resources>
