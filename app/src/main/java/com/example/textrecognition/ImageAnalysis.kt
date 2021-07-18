@@ -2,6 +2,7 @@ package com.example.textrecognition
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,49 +10,44 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.example.textrecognition.databinding.ActivityImageAnalysisBinding
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
-import java.lang.StringBuilder
 
 class ImageAnalysis : AppCompatActivity(), ImageAnalysis.Analyzer {
-    private val TAG = "ImageAnalysis"
-    private val RequestImageCapture = 1
-    private lateinit var imageView: ImageView
+    private val tag = "ImageAnalysis"
+    private val requestImageCapture = 1
     private lateinit var image : InputImage
-    private val stringbuilder = StringBuilder()
+    private val recognizedStringBuilder = StringBuilder()
+    private lateinit var binding : ActivityImageAnalysisBinding
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            image = InputImage.fromBitmap(imageBitmap, 0)
+            binding.imageView.setImageBitmap(imageBitmap)
+            binding.detectBT.isEnabled = true
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_image_analysis)
+        binding = ActivityImageAnalysisBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             //grant the permission
             requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
         }
-        imageView = findViewById<ImageView>(R.id.imageView)
-        val captureButton = findViewById<Button>(R.id.captureBT)
-        val detectButton = findViewById<Button>(R.id.detectBT)
-
-        captureButton.setOnClickListener {
+        binding.captureBT.setOnClickListener {
             dispatchTakePictureIntent()
         }
-        detectButton.setOnClickListener {
+        binding.detectBT.setOnClickListener {
             detectTextFromImage(image)
-
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RequestImageCapture && resultCode == RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            image = InputImage.fromBitmap(imageBitmap, 0)
-            imageView.setImageBitmap(imageBitmap)
-
         }
     }
 
@@ -75,29 +71,30 @@ class ImageAnalysis : AppCompatActivity(), ImageAnalysis.Analyzer {
                                 val elementText = element.text
                                 val elementCornerPoints = element.cornerPoints
                                 val elementFrame = element.boundingBox
-                                stringbuilder.append(elementText).append(" ")
+                                recognizedStringBuilder.append(elementText).append(" ")
                             }
-                            stringbuilder.appendLine()
+                            recognizedStringBuilder.appendLine()
                         }
                     }
-                    textFromImage.setText(stringbuilder.toString())
+                    binding.textFromImage.setText(recognizedStringBuilder.toString())
                 }
                 .addOnFailureListener { e ->
-                    Log.d(TAG, "detectTextFromImage: "+e)
+                    Log.d(tag, "detectTextFromImage: "+e)
                 }
-
     }
 
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
-            startActivityForResult(takePictureIntent, RequestImageCapture)
+            resultLauncher.launch(takePictureIntent)
+            //startActivityForResult(takePictureIntent, requestImageCapture)
+
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
         }
     }
 
-        @SuppressLint("UnsafeExperimentalUsageError")
+        @SuppressLint("UnsafeExperimentalUsageError", "UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         val mediaImage = imageProxy.image
         if (mediaImage != null) {
