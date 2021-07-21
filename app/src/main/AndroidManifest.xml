@@ -11,6 +11,7 @@
 
     <application
         android:allowBackup="true"
+        android:screenOrientation="portrait"
         android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +20,7 @@
         android:theme="@style/Theme.TextRecognition"
         tools:ignore="HardcodedDebugMode">
         <activity
-            android:name=".ImageAnalysis"
+            android:name=".MainActivity"
             tools:ignore="ExtraText">
             <meta-data
                 android:name="com.google.mlkit.vision.DEPENDENCIES"

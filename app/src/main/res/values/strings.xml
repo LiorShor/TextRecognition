@@ -9,4 +9,11 @@
     <string name="display_detected_text_from_image">Display detected text from image</string>
     <string name="capture_image">Capture image</string>
     <string name="detect_image">Detect image</string>
+    <string name="floating_button">floating button</string>
+    <string name="enter_text">Enter text</string>
+    <string name="translating">Translating&#8230;</string>
+    <string name="translated_text">Translated Text</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="clear_text_button">Clear text button</string>
 </resources>
