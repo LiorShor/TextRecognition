@@ -1,93 +1,102 @@
 package com.example.textrecognition
 
-import android.app.Activity
+import android.R.attr
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.util.AttributeSet
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
+import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentActivity
+import com.example.textrecognition.databinding.DialogRegisterBinding
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 
-class Register @JvmOverloads constructor(
-    context: Context?,
-    attrs: AttributeSet?,
-    defStyle: Int = 0
-) :
-    ConstraintLayout(context!!, attrs, defStyle) {
-    private var m_EditTextPersonName: EditText? = null
-    private var m_EditTextEmail: EditText? = null
-    private var m_EditTextRegisterPassword: EditText? = null
-    private var m_EditTextRePassword: EditText? = null
-    private var m_RegisterDialog: Dialog? = null
-    private var m_Auth: FirebaseAuth? = null
+class Register(context: Context) : ConstraintLayout(context) {
 
-    constructor(context: Context?) : this(context, null, 0) {
-        m_RegisterDialog = Dialog(context!!)
+    private var mRegisterDialog = Dialog(context)
+    private lateinit var mAuth: FirebaseAuth;
+    private lateinit var mBinding: DialogRegisterBinding
+    private lateinit var mDatabaseReference: DatabaseReference
+    private lateinit var mFirebaseDatabase: FirebaseDatabase
+    private val TAG = "Register"
+
+    init {
         setDialogSettings()
-        m_EditTextPersonName = m_RegisterDialog!!.findViewById(R.id.editTextPersonName)
-        m_EditTextEmail = m_RegisterDialog!!.findViewById(R.id.editTextEmail)
-        m_EditTextRegisterPassword = m_RegisterDialog!!.findViewById(R.id.editTextRegisterPassword)
-        m_EditTextRePassword = m_RegisterDialog!!.findViewById(R.id.editTextRePassword)
-        m_Auth = FirebaseAuth.getInstance()
+        mAuth = Firebase.auth
         setOnClickRegisterButton()
+        mFirebaseDatabase = FirebaseDatabase.getInstance()
+        mDatabaseReference = mFirebaseDatabase.getReference("Users")
+
     }
 
     private fun setDialogSettings() {
-        m_RegisterDialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        m_RegisterDialog!!.setContentView(R.layout.dialog_register)
-        m_RegisterDialog!!.show()
-        m_RegisterDialog!!.setCanceledOnTouchOutside(true)
+        mBinding = DialogRegisterBinding.inflate(LayoutInflater.from(context))
+        mRegisterDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        mRegisterDialog.setContentView(mBinding.root)
+        mRegisterDialog.show()
+        mRegisterDialog.setCanceledOnTouchOutside(true)
         setDialogWidthAndHeight()
     }
 
     private fun setDialogWidthAndHeight() {
         val metrics = resources.displayMetrics
-        val m_Width = metrics.widthPixels
-        val m_Height = metrics.heightPixels
-        m_RegisterDialog!!.window!!.setLayout(6 * m_Width / 7, 4 * m_Height / 5)
+        val width = metrics.widthPixels
+        val height = metrics.heightPixels
+        mRegisterDialog!!.window!!.setLayout(6 * width / 7, 4 * height / 5)
     }
 
     private fun setOnClickRegisterButton() {
-        val RegisterButton = m_RegisterDialog!!.findViewById<Button>(R.id.registerBT)
-        RegisterButton.setOnClickListener { view: View? ->
-            val name = m_EditTextPersonName!!.text.toString()
-            val email = m_EditTextEmail!!.text.toString()
-            val password = m_EditTextRegisterPassword!!.text.toString()
-            val rePassword = m_EditTextRePassword!!.text.toString()
-            if (validation(name, email, password, rePassword)) writeNewUser(password, email, name)
+        mBinding.registerBT.setOnClickListener {
+            val name = mBinding.editTextPersonName.text.toString()
+            val email = mBinding.editTextEmail.text.toString()
+            val password = mBinding.editTextRegisterPassword.text.toString()
+            val rePassword = mBinding.editTextRePassword.text.toString()
+            if (validation(name, email, password, rePassword)) {
+                writeNewUser(password, email)
+            }
         }
     }
 
-    fun writeNewUser(password: String?, email: String?, name: String?) {
-        val user = User(name, email)
-        m_Auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(context as Activity) { task ->
-                if (task.isSuccessful()) {
+    private fun writeNewUser(password: String, email: String) {
+        val id = mDatabaseReference.push().key
+        mDatabaseReference.child(id!!).setValue(User(password,email))
+    }
+
+/*        mAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    val firebaseUser: FirebaseUser = m_Auth.getCurrentUser()!!
-                    val uid: String = firebaseUser.getUid()
+                    val firebaseUser: FirebaseUser = mAuth.currentUser!!
+                    val uid: String = firebaseUser.uid
                     // Write a user to the database
                     val database: FirebaseDatabase = FirebaseDatabase.getInstance()
                     val databaseReference: DatabaseReference =
                         database.getReference("users").child(uid)
                     databaseReference.setValue(user)
-                    m_RegisterDialog!!.dismiss()
-                    //todo: replace this fragment with TranslatedViewModel
+                    mRegisterDialog.dismiss()
+                    (context as FragmentActivity).supportFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.container,
+                            LoginFragment.newInstance()
+                        )
+                        .commitNow()
                 } else {
                     Toast.makeText(context, "Error signing in", Toast.LENGTH_SHORT).show()
                     // If sign in fails, display a message to the user.
                 }
-            }
-    }
+            }*/
+/*    }*/
 
     private fun validation(
         name: String,
@@ -97,24 +106,24 @@ class Register @JvmOverloads constructor(
     ): Boolean {
         var validationSuccess = true
         if (name.isEmpty()) {
-            m_EditTextPersonName!!.setHintTextColor(Color.RED)
+            mBinding.editTextPersonName.setHintTextColor(Color.RED)
             validationSuccess = false
         }
         if (email.isEmpty()) {
-            m_EditTextEmail!!.setHintTextColor(Color.RED)
+            mBinding.editTextEmail.setHintTextColor(Color.RED)
             validationSuccess = false
         }
         if (rePassword == "") {
-            m_EditTextRePassword!!.setHintTextColor(Color.RED)
+            mBinding.editTextRegisterPassword.setHintTextColor(Color.RED)
             validationSuccess = false
         }
         if (password == "") {
-            m_EditTextRegisterPassword!!.setHintTextColor(Color.RED)
+            mBinding.editTextRePassword.setHintTextColor(Color.RED)
             validationSuccess = false
         }
         if (password != rePassword) {
-            m_EditTextRegisterPassword!!.setTextColor(Color.RED)
-            m_EditTextRePassword!!.setTextColor(Color.RED)
+            mBinding.editTextRegisterPassword.setTextColor(Color.RED)
+            mBinding.editTextRePassword.setTextColor(Color.RED)
             validationSuccess = false
         }
         return validationSuccess

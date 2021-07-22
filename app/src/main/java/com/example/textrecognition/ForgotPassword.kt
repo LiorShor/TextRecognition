@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,9 +13,9 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 
 
-class ForgotPassword : ConstraintLayout {
-    private var m_ForgotPasswordDialog: Dialog? = null
-
+class ForgotPassword{} /*: ConstraintLayout {*/
+/*    private var m_ForgotPasswordDialog: Dialog? = null
+    private lateinit var binding:
     constructor(context: Context) : super(context) {
         m_ForgotPasswordDialog = Dialog(context)
         setDialogSettings()
@@ -24,8 +23,7 @@ class ForgotPassword : ConstraintLayout {
     }
 
     private fun setOnCLickRecover() {
-        val recoverLostPassword =
-            m_ForgotPasswordDialog!!.findViewById<Button>(R.id.recoverPasswordBT)
+        val recoverLostPassword =            .recoverPasswordBT
         recoverLostPassword.setOnClickListener { view: View? -> recoverLostPassword() }
     }
 
@@ -66,5 +64,6 @@ class ForgotPassword : ConstraintLayout {
         val m_Width = metrics.widthPixels
         val m_Height = metrics.heightPixels
         m_ForgotPasswordDialog!!.window!!.setLayout(6 * m_Width / 7, 4 * m_Height / 5)
-    }
-}
+    }*/
+/*
+}*/

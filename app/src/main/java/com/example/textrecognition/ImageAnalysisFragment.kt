@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -28,19 +29,26 @@ import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.textrecognition.databinding.FragmentImageAnalysisBinding
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizerOptions
+import java.lang.Exception
+import java.lang.reflect.Type
 
 
 class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageAnalysis.Analyzer {
+
+    private val TAG = "ImageAnalysisFragment"
     private val translatedTextList = ArrayList<String>()
     private val sourceTextList = ArrayList<String>()
     private var clicked = false
     private lateinit var image: InputImage
     private val recognizedStringBuilder = StringBuilder()
     private lateinit var binding: FragmentImageAnalysisBinding
-    private lateinit var bundle : Bundle
+    private lateinit var bundle: Bundle
+
     private val rotateOpen: Animation by lazy {
         AnimationUtils.loadAnimation(
             context,
@@ -94,12 +102,17 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
                     Manifest.permission.CAMERA
                 )
             } != PackageManager.PERMISSION_GRANTED) {
-            //grant the permission
             mPermissionResult.launch(Manifest.permission.CAMERA)
         }
+        try {
+            sourceTextList.addAll(getArrayList("source"))
+            translatedTextList.addAll(getArrayList("translated"))
+        } catch (e: Exception) {
+            Log.d(TAG, "Database is empty")
+        }
         bundle = Bundle()
-        bundle.putSerializable("translatedArray",translatedTextList)
-        bundle.putSerializable("sourceArray",sourceTextList)
+        bundle.putSerializable("translatedArray", translatedTextList)
+        bundle.putSerializable("sourceArray", sourceTextList)
         //setHasOptionsMenu(false) check if needed
     }
 
@@ -140,17 +153,22 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
         binding.historyFloatingActionButton.setOnClickListener {
             val transaction = getFragmentManager()?.beginTransaction()
             val fragment = HistoryFragment()
-            if(binding.textFromImage.text.toString() != "") {
+            if (binding.textFromImage.text.toString() != "") {
                 sourceTextList.add(binding.textFromImage.text.toString())
-                translatedTextList.add((binding.translatedText.text.toString()))
+                translatedTextList.add(binding.translatedText.text.toString())
+                saveArrayList(sourceTextList, "source")
+                saveArrayList(translatedTextList, "translated")
             }
-            if(sourceTextList.size != 0) {
+            if (sourceTextList.size != 0) {
                 fragment.arguments = bundle
-                transaction?.replace(R.id.container, fragment)
+                transaction?.replace(R.id.container, fragment)?.addToBackStack(null)
                 transaction?.commit()
-            }else
-            {
-                Toast.makeText(context,"It appears that you don't have any history",Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    "It appears that you don't have any history",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         binding.clearText.setOnClickListener {
@@ -309,5 +327,22 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
         fun newInstance(): ImageAnalysisFragment {
             return ImageAnalysisFragment()
         }
+    }
+
+    private fun saveArrayList(list: ArrayList<String>, key: String?) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json: String = gson.toJson(list)
+        editor.putString(key, json)
+        editor.apply()
+    }
+
+    private fun getArrayList(key: String): ArrayList<String> {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+        val gson = Gson()
+        val json = prefs.getString(key, null)
+        val type: Type = object : TypeToken<ArrayList<String?>?>() {}.type
+        return gson.fromJson(json, type)
     }
 }

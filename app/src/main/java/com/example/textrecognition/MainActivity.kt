@@ -1,6 +1,7 @@
 package com.example.textrecognition
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -16,4 +17,7 @@ class MainActivity : AppCompatActivity() {
                 .commitNow()
         }
     }
+/*    fun ExecuteLogin(view: View?) {
+        Login(this)
+    }*/
 }

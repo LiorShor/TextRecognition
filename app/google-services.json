@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "553571434261",
-    "project_id": "text-recognition-b7dc7",
-    "storage_bucket": "text-recognition-b7dc7.appspot.com"
+    "project_number": "877396821896",
+    "project_id": "textrecognition-843e0",
+    "storage_bucket": "textrecognition-843e0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:553571434261:android:b27d6aa2e7bbad8069331c",
+        "mobilesdk_app_id": "1:877396821896:android:1fe71a1b0c98ba57ecdc3d",
         "android_client_info": {
           "package_name": "com.example.textrecognition"
         }
       },
       "oauth_client": [
         {
-          "client_id": "553571434261-dda45hsqp1q286crh9urgbl1jqrrsi0s.apps.googleusercontent.com",
+          "client_id": "877396821896-g8itq9biqqiqvasob095e3m4o2n2ekov.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.textrecognition",
+            "certificate_hash": "7f47ae74e09d58cd629902aed91222bf43843e13"
+          }
+        },
+        {
+          "client_id": "877396821896-g9ol3u17l2v1qma3pma5mp79skaji4j6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAnoKPFDWkgz8m-91wAjEQlw-AW0w1HCRQ"
+          "current_key": "AIzaSyAa6kHrEMimjO8BHE7ZINceOAoJHaJDN7M"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "553571434261-dda45hsqp1q286crh9urgbl1jqrrsi0s.apps.googleusercontent.com",
+              "client_id": "877396821896-g9ol3u17l2v1qma3pma5mp79skaji4j6.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

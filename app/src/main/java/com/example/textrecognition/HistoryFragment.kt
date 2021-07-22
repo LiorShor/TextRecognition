@@ -16,9 +16,6 @@ class HistoryFragment : Fragment() {
     private var translatedTextList = ArrayList<String>()
     private var sourceTextList = ArrayList<String>()
     private lateinit var binding: FragmentHistoryBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
