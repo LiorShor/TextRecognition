@@ -8,8 +8,6 @@
     android:background="@drawable/wallpaper"
     tools:context=".ImageAnalysisFragment">
 
-
-
     <Button
         android:id="@+id/captureBT"
         android:layout_width="200dp"
@@ -22,8 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/translatedText"
         app:layout_constraintVertical_bias="0.96" />
-
-
 
     <TextView
         android:id="@+id/translatedText"
@@ -151,19 +147,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/takePhotofloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#39B09B"
-        android:clickable="true"
-        android:contentDescription="@string/floating_button"
-        android:tint="@color/white"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/addFloatingActionButton"
-        app:layout_constraintEnd_toEndOf="@+id/addFloatingActionButton"
-        app:srcCompat="@drawable/ic_add_a_photo" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/historyFloatingActionButton"
@@ -175,8 +158,8 @@
         android:contentDescription="@string/floating_button"
         android:tint="@color/white"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/takePhotofloatingActionButton"
-        app:layout_constraintEnd_toEndOf="@+id/takePhotofloatingActionButton"
+        app:layout_constraintBottom_toTopOf="@+id/addFloatingActionButton"
+        app:layout_constraintEnd_toEndOf="@+id/addFloatingActionButton"
         app:srcCompat="@drawable/ic_baseline_history_24" />
 
     <Button

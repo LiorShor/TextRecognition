@@ -9,10 +9,8 @@ import androidx.lifecycle.Observer
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.translate.*
-import com.google.mlkit.nl.translate.R
 
 class TranslateViewModel(application: Application) : AndroidViewModel(application) {
 

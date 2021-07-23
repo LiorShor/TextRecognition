@@ -26,4 +26,10 @@
     <string name="re_password">Re-Password</string>
     <string name="register">Register</string>
     <string name="registration">Registration</string>
+    <string name="recover_password">Recover password</string>
+    <string name="please_enter_your_email">Please enter your email</string>
+    <string name="email_sent">Please check your email</string>
+    <string name="continue_with_email">Continue with Email</string>
+    <string name="continue_with_fingerprint">Continue with Fingerprint</string>
+    <string name="logo">Logo</string>
 </resources>

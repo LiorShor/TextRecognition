@@ -34,9 +34,7 @@ import com.google.gson.reflect.TypeToken
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizerOptions
-import java.lang.Exception
 import java.lang.reflect.Type
-
 
 class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageAnalysis.Analyzer {
 
@@ -44,10 +42,12 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
     private val translatedTextList = ArrayList<String>()
     private val sourceTextList = ArrayList<String>()
     private var clicked = false
+    private var isLoggedInWithFinger = false
     private lateinit var image: InputImage
     private val recognizedStringBuilder = StringBuilder()
     private lateinit var binding: FragmentImageAnalysisBinding
     private lateinit var bundle: Bundle
+    private lateinit var adapter: ArrayAdapter<Language>
 
     private val rotateOpen: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -104,13 +104,17 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
             } != PackageManager.PERMISSION_GRANTED) {
             mPermissionResult.launch(Manifest.permission.CAMERA)
         }
-        try {
-            sourceTextList.addAll(getArrayList("source"))
-            translatedTextList.addAll(getArrayList("translated"))
-        } catch (e: Exception) {
-            Log.d(TAG, "Database is empty")
+        if (arguments?.getBoolean("WithFingerprint") == true) {
+            isLoggedInWithFinger = true
+              try {
+                  sourceTextList.addAll(getArrayList("source"))
+                  translatedTextList.addAll(getArrayList("translated"))
+              } catch (e: Exception) {
+                  Log.d(TAG, "Database is empty")
+              }
         }
         bundle = Bundle()
+        bundle.putBoolean("WithFingerprint",isLoggedInWithFinger)
         bundle.putSerializable("translatedArray", translatedTextList)
         bundle.putSerializable("sourceArray", sourceTextList)
         //setHasOptionsMenu(false) check if needed
@@ -137,6 +141,9 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
                 android.R.layout.simple_spinner_dropdown_item, viewModel.availableLanguages
             )
         }
+        if (adapter != null) {
+            this.adapter = adapter
+        }
         binding.captureBT.setOnClickListener {
             dispatchTakePictureIntent()
         }
@@ -147,20 +154,20 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
         binding.addFloatingActionButton.setOnClickListener {
             onAddButtonClicked()
         }
-        binding.takePhotofloatingActionButton.setOnClickListener {
 
-        }
         binding.historyFloatingActionButton.setOnClickListener {
             val transaction = getFragmentManager()?.beginTransaction()
             val fragment = HistoryFragment()
             if (binding.textFromImage.text.toString() != "") {
                 sourceTextList.add(binding.textFromImage.text.toString())
                 translatedTextList.add(binding.translatedText.text.toString())
-                saveArrayList(sourceTextList, "source")
-                saveArrayList(translatedTextList, "translated")
+                fragment.arguments = bundle
+                if (isLoggedInWithFinger){
+                    saveArrayList(sourceTextList, "source")
+                    saveArrayList(translatedTextList, "translated")
+                }
             }
             if (sourceTextList.size != 0) {
-                fragment.arguments = bundle
                 transaction?.replace(R.id.container, fragment)?.addToBackStack(null)
                 transaction?.commit()
             } else {
@@ -251,10 +258,8 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
 
     private fun setVisibility(clicked: Boolean) {
         if (!clicked) {
-            binding.takePhotofloatingActionButton.visibility = View.VISIBLE
             binding.historyFloatingActionButton.visibility = View.VISIBLE
         } else {
-            binding.takePhotofloatingActionButton.visibility = View.INVISIBLE
             binding.historyFloatingActionButton.visibility = View.INVISIBLE
         }
     }
@@ -262,16 +267,15 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
     private fun setAnimation(clicked: Boolean) {
         if (!clicked) {
             binding.historyFloatingActionButton.startAnimation(fromBottom)
-            binding.takePhotofloatingActionButton.startAnimation(fromBottom)
             binding.addFloatingActionButton.startAnimation(rotateOpen)
         } else {
             binding.historyFloatingActionButton.startAnimation(toBottom)
-            binding.takePhotofloatingActionButton.startAnimation(toBottom)
             binding.addFloatingActionButton.startAnimation(rotateClose)
         }
     }
 
     private fun detectTextFromImage(image: InputImage) {
+
         val recognizer =
             TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS) // instance of TextRecognizer
         recognizer.process(image)
@@ -297,11 +301,18 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
                     }
                 }
                 binding.textFromImage.setText(recognizedStringBuilder.toString())
+                binding.sourceLangSelector.setSelection(adapter.getPosition(Language(visionText.textBlocks[0].recognizedLanguage)))
                 recognizedStringBuilder.clear()
             }
             .addOnFailureListener { e ->
                 Log.d("ImageAnalysisFragment", "detectTextFromImage: $e")
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sourceTextList.clear()
+        translatedTextList.clear()
     }
 
     private fun dispatchTakePictureIntent() {
@@ -346,3 +357,5 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
         return gson.fromJson(json, type)
     }
 }
+
+

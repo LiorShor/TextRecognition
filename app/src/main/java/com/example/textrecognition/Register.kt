@@ -1,43 +1,30 @@
 package com.example.textrecognition
 
-import android.R.attr
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import com.example.textrecognition.databinding.DialogRegisterBinding
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-
 
 class Register(context: Context) : ConstraintLayout(context) {
 
-    private var mRegisterDialog = Dialog(context)
-    private lateinit var mAuth: FirebaseAuth;
     private lateinit var mBinding: DialogRegisterBinding
-    private lateinit var mDatabaseReference: DatabaseReference
-    private lateinit var mFirebaseDatabase: FirebaseDatabase
-    private val TAG = "Register"
+    private var mRegisterDialog = Dialog(context)
+    private var mAuth: FirebaseAuth
 
     init {
         setDialogSettings()
         mAuth = Firebase.auth
         setOnClickRegisterButton()
-        mFirebaseDatabase = FirebaseDatabase.getInstance()
-        mDatabaseReference = mFirebaseDatabase.getReference("Users")
-
     }
 
     private fun setDialogSettings() {
@@ -53,7 +40,7 @@ class Register(context: Context) : ConstraintLayout(context) {
         val metrics = resources.displayMetrics
         val width = metrics.widthPixels
         val height = metrics.heightPixels
-        mRegisterDialog!!.window!!.setLayout(6 * width / 7, 4 * height / 5)
+        mRegisterDialog.window!!.setLayout(6 * width / 7, 4 * height / 5)
     }
 
     private fun setOnClickRegisterButton() {
@@ -69,11 +56,7 @@ class Register(context: Context) : ConstraintLayout(context) {
     }
 
     private fun writeNewUser(password: String, email: String) {
-        val id = mDatabaseReference.push().key
-        mDatabaseReference.child(id!!).setValue(User(password,email))
-    }
-
-/*        mAuth.createUserWithEmailAndPassword(email, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
@@ -82,21 +65,21 @@ class Register(context: Context) : ConstraintLayout(context) {
                     // Write a user to the database
                     val database: FirebaseDatabase = FirebaseDatabase.getInstance()
                     val databaseReference: DatabaseReference =
-                        database.getReference("users").child(uid)
-                    databaseReference.setValue(user)
+                        database.getReference("Users").child(uid)
+                    databaseReference.setValue(User(password, email))
                     mRegisterDialog.dismiss()
                     (context as FragmentActivity).supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.container,
-                            LoginFragment.newInstance()
+                            ImageAnalysisFragment.newInstance()
                         )
                         .commitNow()
                 } else {
                     Toast.makeText(context, "Error signing in", Toast.LENGTH_SHORT).show()
                     // If sign in fails, display a message to the user.
                 }
-            }*/
-/*    }*/
+            }
+    }
 
     private fun validation(
         name: String,

@@ -1,61 +1,56 @@
 package com.example.textrecognition
 
-
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
-import android.util.AttributeSet
-import android.view.View
-import android.widget.TextView
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.textrecognition.databinding.DialogForgotPasswordBinding
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 
+class ForgotPassword(context: Context) : ConstraintLayout(context) {
+    private var mForgotPasswordDialog = Dialog(context)
+    private lateinit var mBinding: DialogForgotPasswordBinding
 
-class ForgotPassword{} /*: ConstraintLayout {*/
-/*    private var m_ForgotPasswordDialog: Dialog? = null
-    private lateinit var binding:
-    constructor(context: Context) : super(context) {
-        m_ForgotPasswordDialog = Dialog(context)
+    init {
         setDialogSettings()
         setOnCLickRecover()
     }
 
     private fun setOnCLickRecover() {
-        val recoverLostPassword =            .recoverPasswordBT
-        recoverLostPassword.setOnClickListener { view: View? -> recoverLostPassword() }
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
+        mBinding.recoverPasswordBT.setOnClickListener { recoverLostPassword() }
     }
 
     private fun recoverLostPassword() {
-        val m_EmailTextView =
-            m_ForgotPasswordDialog!!.findViewById<TextView>(R.id.editTextForgotEmail)
-        val email = m_EmailTextView.text.toString()
-        if (!email.isEmpty()) {
+        val email = mBinding.editTextForgotEmail.text.toString()
+        if (email.isNotEmpty()) {
             val auth = FirebaseAuth.getInstance()
             auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener { task: Task<Void?> ->
                     if (task.isSuccessful) {
-                        Toast.makeText(context, R.string.emailsent, Toast.LENGTH_LONG).show()
-                        m_ForgotPasswordDialog!!.dismiss()
-                    } else m_EmailTextView.setHintTextColor(Color.RED)
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.email_sent),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        mForgotPasswordDialog.dismiss()
+                    } else {
+                        mBinding.editTextForgotEmail.setHintTextColor(Color.RED)
+                    }
                 }
-        } else m_EmailTextView.setHintTextColor(Color.RED)
+        } else { 
+            mBinding.editTextForgotEmail.setHintTextColor(Color.RED)
+        }
     }
 
     private fun setDialogSettings() {
-        m_ForgotPasswordDialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        m_ForgotPasswordDialog.setContentView(R.layout.dialog_forgotpassword)
-        m_ForgotPasswordDialog!!.show()
-        m_ForgotPasswordDialog!!.setCanceledOnTouchOutside(true)
+        mBinding = DialogForgotPasswordBinding.inflate(LayoutInflater.from(context))
+        mForgotPasswordDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        mForgotPasswordDialog.setContentView(mBinding.root)
+        mForgotPasswordDialog.show()
+        mForgotPasswordDialog.setCanceledOnTouchOutside(true)
         setDialogWidthAndHeight()
     }
 
@@ -63,7 +58,6 @@ class ForgotPassword{} /*: ConstraintLayout {*/
         val metrics = resources.displayMetrics
         val m_Width = metrics.widthPixels
         val m_Height = metrics.heightPixels
-        m_ForgotPasswordDialog!!.window!!.setLayout(6 * m_Width / 7, 4 * m_Height / 5)
-    }*/
-/*
-}*/
+        mForgotPasswordDialog.window?.setLayout(6 * m_Width / 7, 4 * m_Height / 5)
+    }
+}

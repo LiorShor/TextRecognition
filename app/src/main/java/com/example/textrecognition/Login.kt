@@ -5,14 +5,12 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentActivity
 import com.example.textrecognition.databinding.DialogLoginBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-
 
 class Login(context: Context) : ConstraintLayout(context) {
     private val mLoginDialog = Dialog(context)
@@ -23,7 +21,7 @@ class Login(context: Context) : ConstraintLayout(context) {
         setDialogSettings()
         onClickLoginButton(context)
         onClicksSignUpEditText(context)
-        onClickForgotPassword(/*context*/)
+        onClickForgotPassword(context)
     }
 
     private fun setDialogSettings() {
@@ -49,10 +47,10 @@ class Login(context: Context) : ConstraintLayout(context) {
         }
     }
 
-    private fun onClickForgotPassword(/*context: Context*/) {
+    private fun onClickForgotPassword(context: Context) {
         mBinding.forgotPasswordTextView.setOnClickListener {
             ForgotPassword(
-                /*context*/
+                context
             )
         }
     }
@@ -67,7 +65,7 @@ class Login(context: Context) : ConstraintLayout(context) {
                     password
                 )
             ) {
-                SignIn(emailAddress, password, context)
+                signIn(emailAddress, password, context)
             }
         }
     }
@@ -85,40 +83,26 @@ class Login(context: Context) : ConstraintLayout(context) {
         return isValid
     }
 
-    private fun SignIn(emailAddress: String, password: String, context: Context) {
+    private fun signIn(emailAddress: String, password: String, context: Context) {
+        val bundle = Bundle()
+        val fragment = ImageAnalysisFragment()
         mAuth.signInWithEmailAndPassword(emailAddress, password)
             .addOnSuccessListener {
                 val sharedPreferences: SharedPreferences = context.getSharedPreferences(
                     "USER_DETAILS",
                     MODE_PRIVATE
                 )
+                bundle.putBoolean("WithFingerprint",false)
                 sharedPreferences.edit().putString("userEmail", emailAddress).apply()
                 sharedPreferences.edit().putString("userPassword", password).apply()
-                getHistoryFromDB(/*context*/)
-            }
-    }
-
-    private fun getHistoryFromDB(/*context: Context*/) {
-        val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-        val firebaseUser: FirebaseUser = mAuth.currentUser!!
-        val uid: String = firebaseUser.uid
-        val myRef: DatabaseReference = database.getReference("tasks").child(uid)
-        myRef.get().addOnSuccessListener { dataSnapshot ->
-            for (childDataSnapshot in dataSnapshot.children) {
-/*
-  */
-/*.getInstance().getTaskMap().put(
-                        Objects.requireNonNull(childDataSnapshot.child("m_ID").getValue())
-                            .toString(), childDataSnapshot.getValue(
-                            Task::class.java
-                        )*//*
-
+                mLoginDialog.dismiss()
+                (context as FragmentActivity).supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.container,
+                        fragment
                     )
-*/
-
+                    .commitNow()
             }
-            //todo: move to next screen
-        }
     }
 }
 

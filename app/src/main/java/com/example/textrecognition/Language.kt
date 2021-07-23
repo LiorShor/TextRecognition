@@ -2,7 +2,7 @@ package com.example.textrecognition
 
 import java.util.*
 
-class Language(val code: String) : Comparable<Language> {
+class Language(var code: String) : Comparable<Language> {
 
     private val displayName: String
         get() = Locale(code).displayName
