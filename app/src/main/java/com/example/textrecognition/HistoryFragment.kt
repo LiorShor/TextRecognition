@@ -1,5 +1,6 @@
 package com.example.textrecognition
 
+import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -18,6 +19,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -75,7 +79,7 @@ class HistoryFragment : Fragment() {
             getHistoryFromDB()
         }
         else{
-            adapter = HistoryAdapter(translatedTextList, sourceTextList)
+            adapter = HistoryAdapter(getArrayList("translated"), getArrayList("source"))
             binding.historyRecycleView.adapter = adapter
         }
 
@@ -166,6 +170,14 @@ class HistoryFragment : Fragment() {
         val databaseReference = database.getReference("History").child(uid)
         databaseReference.child("Translated").setValue(translatedTextList)
         databaseReference.child("Source").setValue(sourceTextList)
+    }
+
+    private fun getArrayList(key: String): ArrayList<String> {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+        val gson = Gson()
+        val json = prefs.getString(key, null)
+        val type: Type = object : TypeToken<ArrayList<String?>?>() {}.type
+        return gson.fromJson(json, type)
     }
 
     companion object {

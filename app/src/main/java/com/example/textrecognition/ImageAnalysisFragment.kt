@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -48,6 +49,8 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
     private lateinit var binding: FragmentImageAnalysisBinding
     private lateinit var bundle: Bundle
     private lateinit var adapter: ArrayAdapter<Language>
+
+
 
     private val rotateOpen: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -104,14 +107,20 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
             } != PackageManager.PERMISSION_GRANTED) {
             mPermissionResult.launch(Manifest.permission.CAMERA)
         }
-        if (arguments?.getBoolean("WithFingerprint") == true) {
-            isLoggedInWithFinger = true
-              try {
-                  sourceTextList.addAll(getArrayList("source"))
-                  translatedTextList.addAll(getArrayList("translated"))
-              } catch (e: Exception) {
-                  Log.d(TAG, "Database is empty")
-              }
+
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+
+        if (sharedPref != null) {
+            if(sharedPref.getBoolean("Fingerprint", false).equals(true)) {
+//                if (arguments?.getBoolean("WithFingerprint") == true) {
+                    isLoggedInWithFinger = true
+                    try {
+                        sourceTextList.addAll(getArrayList("source"))
+                        translatedTextList.addAll(getArrayList("translated"))
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Database is empty")
+                    }
+                }
         }
         bundle = Bundle()
         bundle.putBoolean("WithFingerprint",isLoggedInWithFinger)
@@ -163,8 +172,20 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
                 translatedTextList.add(binding.translatedText.text.toString())
                 fragment.arguments = bundle
                 if (isLoggedInWithFinger){
-                    saveArrayList(sourceTextList, "source")
-                    saveArrayList(translatedTextList, "translated")
+                    var array = ArrayList<String>()
+                    var array1 = ArrayList<String>()
+                    try {
+                        array = getArrayList("source")
+                        array1 = getArrayList("translated")
+                        sourceTextList.addAll(array)
+                        translatedTextList.addAll(array1)
+                        saveArrayList(sourceTextList, "source")
+                        saveArrayList(translatedTextList, "translated")
+                    }
+                    catch (ex : Exception) {
+                        saveArrayList(sourceTextList, "source")
+                        saveArrayList(translatedTextList, "translated")
+                    }
                 }
             }
             if (sourceTextList.size != 0) {
