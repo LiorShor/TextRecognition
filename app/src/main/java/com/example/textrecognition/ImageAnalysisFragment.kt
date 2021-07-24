@@ -22,6 +22,8 @@ import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.camera.core.ImageAnalysis
@@ -123,7 +125,7 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
                 }
         }
         bundle = Bundle()
-        bundle.putBoolean("WithFingerprint",isLoggedInWithFinger)
+        bundle.putBoolean("WithFingerprint", isLoggedInWithFinger)
         bundle.putSerializable("translatedArray", translatedTextList)
         bundle.putSerializable("sourceArray", sourceTextList)
         //setHasOptionsMenu(false) check if needed
@@ -172,20 +174,8 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
                 translatedTextList.add(binding.translatedText.text.toString())
                 fragment.arguments = bundle
                 if (isLoggedInWithFinger){
-                    var array = ArrayList<String>()
-                    var array1 = ArrayList<String>()
-                    try {
-                        array = getArrayList("source")
-                        array1 = getArrayList("translated")
-                        sourceTextList.addAll(array)
-                        translatedTextList.addAll(array1)
-                        saveArrayList(sourceTextList, "source")
-                        saveArrayList(translatedTextList, "translated")
-                    }
-                    catch (ex : Exception) {
-                        saveArrayList(sourceTextList, "source")
-                        saveArrayList(translatedTextList, "translated")
-                    }
+                    saveArrayList(sourceTextList, "source")
+                    saveArrayList(translatedTextList, "translated")
                 }
             }
             if (sourceTextList.size != 0) {
@@ -330,11 +320,11 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
             }
     }
 
-    override fun onResume() {
-        super.onResume()
-        sourceTextList.clear()
-        translatedTextList.clear()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        sourceTextList.clear()
+//        translatedTextList.clear()
+//    }
 
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)

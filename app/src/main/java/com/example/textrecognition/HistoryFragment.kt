@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,13 +74,15 @@ class HistoryFragment : Fragment() {
         binding.historyRecycleView.layoutManager = layoutManager
         translatedTextList.clear()
         sourceTextList.clear()
-        translatedTextList = bundle?.getSerializable("translatedArray") as ArrayList<String>
-        sourceTextList = bundle.getSerializable("sourceArray") as ArrayList<String>
-        if(bundle.getBoolean("WithFingerprint") == false) {
+        if(bundle != null) {
+            translatedTextList = bundle?.getSerializable("translatedArray") as ArrayList<String>
+            sourceTextList = bundle.getSerializable("sourceArray") as ArrayList<String>
+        }
+        if(bundle?.getBoolean("WithFingerprint") == false) {
             getHistoryFromDB()
         }
         else{
-            adapter = HistoryAdapter(getArrayList("translated"), getArrayList("source"))
+            adapter = HistoryAdapter(translatedTextList, sourceTextList)
             binding.historyRecycleView.adapter = adapter
         }
 
@@ -97,9 +100,25 @@ class HistoryFragment : Fragment() {
         binding.clearHistoryFloatingActionButton.setOnClickListener{
             sourceTextList.clear()
             translatedTextList.clear()
-            writeHistoryToDB()
-            clearSharedPreferenceHistory()
+            if(bundle?.getBoolean("WithFingerprint") == false){
+                writeHistoryToDB()
+            }
+            else {
+                clearSharedPreferenceHistory()
+            }
             binding.historyRecycleView.adapter?.notifyDataSetChanged()
+        }
+
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            // Handle the back button event
+            sourceTextList.clear()
+            translatedTextList.clear()
+            getFragmentManager()?.beginTransaction()
+                ?.replace(
+                    R.id.container,
+                    ImageAnalysisFragment.newInstance()
+                )
+                ?.commitNow()
         }
     }
 
@@ -170,14 +189,6 @@ class HistoryFragment : Fragment() {
         val databaseReference = database.getReference("History").child(uid)
         databaseReference.child("Translated").setValue(translatedTextList)
         databaseReference.child("Source").setValue(sourceTextList)
-    }
-
-    private fun getArrayList(key: String): ArrayList<String> {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        val gson = Gson()
-        val json = prefs.getString(key, null)
-        val type: Type = object : TypeToken<ArrayList<String?>?>() {}.type
-        return gson.fromJson(json, type)
     }
 
     companion object {

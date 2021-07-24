@@ -22,6 +22,14 @@ class MainActivity : AppCompatActivity() {
     private var prefs : SharedPreferences? = null
 //    private val prefs = PreferenceManager.getDefaultSharedPreferences(mContext)
 
+//    override fun onBackPressed() {
+//        val fragment =
+//            this.supportFragmentManager.findFragmentById(R.id.coco)
+//        (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
+//            super.onBackPressed()
+//        }
+//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
