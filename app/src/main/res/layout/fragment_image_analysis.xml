@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wallpaper"
-    android:id="@+id/coco"
     tools:context=".ImageAnalysisFragment">
 
     <Button
@@ -163,6 +162,19 @@
         app:layout_constraintEnd_toEndOf="@+id/addFloatingActionButton"
         app:srcCompat="@drawable/ic_baseline_history_24" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/logoutFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#39B09B"
+        android:clickable="true"
+        android:contentDescription="@string/floating_button"
+        android:tint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/historyFloatingActionButton"
+        app:layout_constraintEnd_toEndOf="@+id/historyFloatingActionButton"
+        app:srcCompat="@drawable/ic_logout" />
     <Button
         android:id="@+id/clear_text"
         style="@style/IconOnlyButton"

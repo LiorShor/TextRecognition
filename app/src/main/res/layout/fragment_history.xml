@@ -32,7 +32,7 @@
             app:srcCompat="@drawable/ic_add" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/takePhotofloatingActionButton"
+        android:id="@+id/takePhotoFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -55,8 +55,21 @@
         android:contentDescription="@string/floating_button"
         android:tint="@color/white"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/takePhotofloatingActionButton"
-        app:layout_constraintEnd_toEndOf="@+id/takePhotofloatingActionButton"
+        app:layout_constraintBottom_toTopOf="@+id/takePhotoFloatingActionButton"
+        app:layout_constraintEnd_toEndOf="@+id/takePhotoFloatingActionButton"
         app:srcCompat="@drawable/ic_clear" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/logoutFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#39B09B"
+            android:clickable="true"
+            android:contentDescription="@string/floating_button"
+            android:tint="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/clearHistoryFloatingActionButton"
+            app:layout_constraintEnd_toEndOf="@+id/clearHistoryFloatingActionButton"
+            app:srcCompat="@drawable/ic_logout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

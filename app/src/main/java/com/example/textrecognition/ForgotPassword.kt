@@ -56,8 +56,8 @@ class ForgotPassword(context: Context) : ConstraintLayout(context) {
 
     private fun setDialogWidthAndHeight() {
         val metrics = resources.displayMetrics
-        val m_Width = metrics.widthPixels
-        val m_Height = metrics.heightPixels
-        mForgotPasswordDialog.window?.setLayout(6 * m_Width / 7, 4 * m_Height / 5)
+        val width = metrics.widthPixels
+        val height = metrics.heightPixels
+        mForgotPasswordDialog.window?.setLayout(6 * width / 7, 4 * height / 5)
     }
 }

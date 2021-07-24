@@ -3,50 +3,42 @@ package com.example.textrecognition
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import com.google.gson.Gson
+import com.example.textrecognition.databinding.ActivityMainBinding
+import java.io.Serializable
 import java.util.concurrent.Executor
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var executor : Executor
+class MainActivity : AppCompatActivity(), ICommunicator {
+    private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private val bundle = Bundle()
-
-
-    //    private var mContext:Context = this@MainActivity
-    private var prefs : SharedPreferences? = null
-//    private val prefs = PreferenceManager.getDefaultSharedPreferences(mContext)
-
-//    override fun onBackPressed() {
-//        val fragment =
-//            this.supportFragmentManager.findFragmentById(R.id.coco)
-//        (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
-//            super.onBackPressed()
-//        }
-//    }
+    private lateinit var binding: ActivityMainBinding
+    private var prefs: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.fingerPrintBT.setOnClickListener {
+            executeLoginWithFingerprint()
+        }
+        binding.loginBT.setOnClickListener {
+            executeLoginWithEmail()
+        }
     }
-    fun executeLoginWithEmail(view: View) {
+
+    fun executeLoginWithEmail() {
         Login(this)
-        prefs = this?.getPreferences(Context.MODE_PRIVATE)
-        bundle.putBoolean("WithFingerprint",false)
+        prefs = this.getPreferences(Context.MODE_PRIVATE)
         val editor = prefs?.edit()
         editor?.putBoolean("Fingerprint", false)
         editor?.apply()
     }
 
-    fun executeLoginWithFingerprint(view: View) {
-        val fragment = ImageAnalysisFragment()
-        fragment.arguments = bundle
-        prefs = this?.getPreferences(Context.MODE_PRIVATE)
+    fun executeLoginWithFingerprint() {
+        prefs = this.getPreferences(Context.MODE_PRIVATE)
         executor = ContextCompat.getMainExecutor(this)
         biometricPrompt = BiometricPrompt(
             this,
@@ -55,16 +47,15 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    bundle.putBoolean("WithFingerprint",true)
                     val editor = prefs?.edit()
                     editor?.putBoolean("Fingerprint", true)
                     editor?.apply()
-                        supportFragmentManager.beginTransaction()
-                            .replace(
-                                R.id.container,
-                                fragment
-                            )
-                            .commitNow()
+                    supportFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.container,
+                            ImageAnalysisFragment()
+                        )
+                        .commitNow()
                 }
             })
 
@@ -76,4 +67,21 @@ class MainActivity : AppCompatActivity() {
         biometricPrompt.authenticate(promptInfo)
     }
 
+    override fun changeFragmentWithData(
+        isLoggedInWithFinger: Boolean,
+        translatedTextList: Serializable,
+        sourceTextList: Serializable
+    ) {
+        val bundle = Bundle()
+        val fragment = HistoryFragment()
+        bundle.putBoolean("WithFingerprint", isLoggedInWithFinger)
+        bundle.putSerializable("translatedArray", translatedTextList)
+        bundle.putSerializable("sourceArray", sourceTextList)
+        fragment.arguments = bundle
+        supportFragmentManager.beginTransaction().replace(R.id.container,fragment).commit()
+    }
+
+    override fun changeFragmentWithoutData() {
+        supportFragmentManager.beginTransaction().replace(R.id.container,ImageAnalysisFragment()).commit()
+    }
 }

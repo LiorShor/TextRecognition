@@ -9,7 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,8 +22,6 @@ import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.camera.core.ImageAnalysis
@@ -41,7 +39,6 @@ import java.lang.reflect.Type
 
 class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageAnalysis.Analyzer {
 
-    private val TAG = "ImageAnalysisFragment"
     private val translatedTextList = ArrayList<String>()
     private val sourceTextList = ArrayList<String>()
     private var clicked = false
@@ -49,11 +46,8 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
     private lateinit var image: InputImage
     private val recognizedStringBuilder = StringBuilder()
     private lateinit var binding: FragmentImageAnalysisBinding
-    private lateinit var bundle: Bundle
+    private lateinit var communicator: ICommunicator
     private lateinit var adapter: ArrayAdapter<Language>
-
-
-
     private val rotateOpen: Animation by lazy {
         AnimationUtils.loadAnimation(
             context,
@@ -109,26 +103,18 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
             } != PackageManager.PERMISSION_GRANTED) {
             mPermissionResult.launch(Manifest.permission.CAMERA)
         }
-
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-
         if (sharedPref != null) {
-            if(sharedPref.getBoolean("Fingerprint", false).equals(true)) {
-//                if (arguments?.getBoolean("WithFingerprint") == true) {
-                    isLoggedInWithFinger = true
-                    try {
-                        sourceTextList.addAll(getArrayList("source"))
-                        translatedTextList.addAll(getArrayList("translated"))
-                    } catch (e: Exception) {
-                        Log.d(TAG, "Database is empty")
-                    }
+            if (sharedPref.getBoolean("Fingerprint", false)) {
+                isLoggedInWithFinger = true
+                try {
+                    sourceTextList.addAll(getArrayList("source"))
+                    translatedTextList.addAll(getArrayList("translated"))
+                } catch (e: Exception) {
+                    Log.d("EmptyDB", "Database is empty")
                 }
+            }
         }
-        bundle = Bundle()
-        bundle.putBoolean("WithFingerprint", isLoggedInWithFinger)
-        bundle.putSerializable("translatedArray", translatedTextList)
-        bundle.putSerializable("sourceArray", sourceTextList)
-        //setHasOptionsMenu(false) check if needed
     }
 
     override fun onCreateView(
@@ -138,6 +124,7 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
     ): View {
         inflater.inflate(R.layout.fragment_image_analysis, container, false)
         binding = FragmentImageAnalysisBinding.inflate(inflater, container, false)
+        communicator = activity as ICommunicator
         return binding.root
     }
 
@@ -167,20 +154,16 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
         }
 
         binding.historyFloatingActionButton.setOnClickListener {
-            val transaction = getFragmentManager()?.beginTransaction()
-            val fragment = HistoryFragment()
             if (binding.textFromImage.text.toString() != "") {
                 sourceTextList.add(binding.textFromImage.text.toString())
                 translatedTextList.add(binding.translatedText.text.toString())
-                fragment.arguments = bundle
-                if (isLoggedInWithFinger){
+                if (isLoggedInWithFinger) {
                     saveArrayList(sourceTextList, "source")
                     saveArrayList(translatedTextList, "translated")
                 }
             }
             if (sourceTextList.size != 0) {
-                transaction?.replace(R.id.container, fragment)?.addToBackStack(null)
-                transaction?.commit()
+                communicator.changeFragmentWithData(isLoggedInWithFinger,translatedTextList,sourceTextList)
             } else {
                 Toast.makeText(
                     context,
@@ -197,6 +180,11 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
             val sourceLangPosition = binding.sourceLangSelector.selectedItemPosition
             binding.sourceLangSelector.setSelection(binding.targetLangSelector.selectedItemPosition)
             binding.targetLangSelector.setSelection(sourceLangPosition)
+        }
+        binding.logoutFloatingActionButton.setOnClickListener {
+            PreferenceManager.getDefaultSharedPreferences(activity).edit().remove("WithFingerprint").apply()
+            val intent = Intent (requireActivity(), MainActivity()::class.java)
+            startActivity(intent)
         }
 
         binding.sourceLangSelector.onItemSelectedListener =
@@ -270,17 +258,21 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
     private fun setVisibility(clicked: Boolean) {
         if (!clicked) {
             binding.historyFloatingActionButton.visibility = View.VISIBLE
+            binding.logoutFloatingActionButton.visibility = View.VISIBLE
         } else {
             binding.historyFloatingActionButton.visibility = View.INVISIBLE
+            binding.logoutFloatingActionButton.visibility = View.INVISIBLE
         }
     }
 
     private fun setAnimation(clicked: Boolean) {
         if (!clicked) {
             binding.historyFloatingActionButton.startAnimation(fromBottom)
+            binding.logoutFloatingActionButton.startAnimation(fromBottom)
             binding.addFloatingActionButton.startAnimation(rotateOpen)
         } else {
             binding.historyFloatingActionButton.startAnimation(toBottom)
+            binding.logoutFloatingActionButton.startAnimation(toBottom)
             binding.addFloatingActionButton.startAnimation(rotateClose)
         }
     }
@@ -319,12 +311,6 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
                 Log.d("ImageAnalysisFragment", "detectTextFromImage: $e")
             }
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        sourceTextList.clear()
-//        translatedTextList.clear()
-//    }
 
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
