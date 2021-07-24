@@ -1,4 +1,4 @@
-package com.example.textrecognition
+package com.example.textrecognition.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.textrecognition.view.activities.MainActivity
+import com.example.textrecognition.R
+import com.example.textrecognition.view.adapters.HistoryAdapter
 import com.example.textrecognition.databinding.FragmentHistoryBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

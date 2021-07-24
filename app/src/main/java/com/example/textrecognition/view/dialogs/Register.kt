@@ -1,4 +1,4 @@
-package com.example.textrecognition
+package com.example.textrecognition.view.dialogs
 
 import android.app.Dialog
 import android.content.Context
@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
+import com.example.textrecognition.view.fragments.ImageAnalysisFragment
+import com.example.textrecognition.model.User
+import com.example.textrecognition.R
 import com.example.textrecognition.databinding.DialogRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

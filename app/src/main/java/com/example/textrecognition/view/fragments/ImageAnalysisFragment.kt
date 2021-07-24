@@ -1,4 +1,4 @@
-package com.example.textrecognition
+package com.example.textrecognition.view.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -29,6 +29,10 @@ import androidx.camera.core.ImageProxy
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.textrecognition.model.Language
+import com.example.textrecognition.R
+import com.example.textrecognition.model.TranslateViewModel
+import com.example.textrecognition.view.activities.MainActivity
 import com.example.textrecognition.databinding.FragmentImageAnalysisBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

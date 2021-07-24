@@ -1,4 +1,4 @@
-package com.example.textrecognition
+package com.example.textrecognition.view.activities
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -6,6 +6,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import com.example.textrecognition.view.fragments.ImageAnalysisFragment
+import com.example.textrecognition.R
+import com.example.textrecognition.view.dialogs.Login
+import com.example.textrecognition.view.fragments.HistoryFragment
+import com.example.textrecognition.view.fragments.ICommunicator
 import com.example.textrecognition.databinding.ActivityMainBinding
 import java.io.Serializable
 import java.util.concurrent.Executor
@@ -82,6 +87,6 @@ class MainActivity : AppCompatActivity(), ICommunicator {
     }
 
     override fun changeFragmentWithoutData() {
-        supportFragmentManager.beginTransaction().replace(R.id.container,ImageAnalysisFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container, ImageAnalysisFragment()).commit()
     }
 }

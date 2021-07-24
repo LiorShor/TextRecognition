@@ -1,4 +1,4 @@
-package com.example.textrecognition
+package com.example.textrecognition.view.dialogs
 
 import android.app.Dialog
 import android.content.Context
@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.textrecognition.R
 import com.example.textrecognition.databinding.DialogForgotPasswordBinding
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth

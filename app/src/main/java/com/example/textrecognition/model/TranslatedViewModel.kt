@@ -1,4 +1,4 @@
-package com.example.textrecognition
+package com.example.textrecognition.model
 
 import android.app.Application
 import android.util.LruCache
@@ -41,7 +41,7 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
     val targetLang = MutableLiveData<Language>()
     val sourceText = MutableLiveData<String>()
     val translatedText = MediatorLiveData<ResultOrError>()
-    val availableModels = MutableLiveData<List<String>>()
+    private val availableModels = MutableLiveData<List<String>>()
 
     // Gets a list of all available translation languages.
     val availableLanguages: List<Language> = TranslateLanguage.getAllLanguages()
@@ -73,10 +73,6 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
         fetchDownloadedModels()
     }
 
-    private fun getModel(languageCode: String): TranslateRemoteModel {
-        return TranslateRemoteModel.Builder(languageCode).build()
-    }
-
     // Updates the list of downloaded models available for local translation.
     private fun fetchDownloadedModels() {
         modelManager.getDownloadedModels(TranslateRemoteModel::class.java)
@@ -86,7 +82,7 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
             }
     }
 
-    fun translate(): Task<String> {
+    private fun translate(): Task<String> {
         val text = sourceText.value
         val source = sourceLang.value
         val target = targetLang.value

@@ -20,7 +20,7 @@
         android:theme="@style/Theme.TextRecognition"
         tools:ignore="HardcodedDebugMode">
         <activity
-            android:name=".MainActivity"
+            android:name=".view.activities.MainActivity"
             tools:ignore="ExtraText">
             <meta-data
                 android:name="com.google.mlkit.vision.DEPENDENCIES"

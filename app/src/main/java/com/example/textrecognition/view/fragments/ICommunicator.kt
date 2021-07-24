@@ -1,4 +1,4 @@
-package com.example.textrecognition
+package com.example.textrecognition.view.fragments
 
 import java.io.Serializable
 
