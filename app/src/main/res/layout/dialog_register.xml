@@ -17,10 +17,12 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#3B484E">
 
             <TextView
                 android:id="@+id/textView"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="96dp"
@@ -34,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
+                android:textColor="@color/white"
                 android:layout_marginEnd="15dp"
                 android:text="@string/email"
                 app:layout_constraintEnd_toStartOf="@+id/editTextEmail"
@@ -45,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="45dp"
                 android:layout_marginEnd="15dp"
+                android:textColor="@color/white"
                 android:text="@string/password"
                 app:layout_constraintEnd_toStartOf="@+id/editTextEmail"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -55,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="45dp"
                 android:layout_marginEnd="15dp"
+                android:textColor="@color/white"
                 android:text="@string/re_password"
                 app:layout_constraintEnd_toStartOf="@+id/editTextRePassword"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -64,6 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:textColor="@color/white"
                 android:layout_marginEnd="35dp"
                 android:autofillHints="@string/enter_name"
                 android:ems="10"
@@ -77,6 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:textColor="@color/white"
                 android:layout_marginEnd="35dp"
                 android:autofillHints="@string/email"
                 android:ems="10"
@@ -91,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="35dp"
+                android:textColor="@color/white"
                 android:autofillHints="@string/password"
                 android:ems="10"
                 android:hint="@string/enter_password"
@@ -106,6 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="35dp"
+                android:textColor="@color/white"
                 android:autofillHints="@string/re_password"
                 android:ems="10"
                 android:hint="@string/re_password"
@@ -133,6 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
+                android:textColor="@color/white"
                 android:text="@string/registration"
                 android:textSize="30sp"
                 app:layout_constraintBottom_toBottomOf="parent"
