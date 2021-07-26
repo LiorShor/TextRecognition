@@ -37,6 +37,8 @@ import com.example.textrecognition.databinding.FragmentImageAnalysisBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.objects.ObjectDetection
+import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizerOptions
 import java.lang.reflect.Type
@@ -150,6 +152,7 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
             dispatchTakePictureIntent()
         }
         binding.detectBT.setOnClickListener {
+            detectObjectsFromImage(image)
             detectTextFromImage(image)
         }
 
@@ -282,37 +285,55 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
     }
 
     private fun detectTextFromImage(image: InputImage) {
-
         val recognizer =
             TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS) // instance of TextRecognizer
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
-//                // Task completed successfully
-//                // ...
-//                val resultText = visionText.text
                 for (block in visionText.textBlocks) {
-//                    val blockText = block.text
-//                    val blockCornerPoints = block.cornerPoints
-//                    val blockFrame = block.boundingBox
                     for (line in block.lines) {
-//                        val lineText = line.text
-//                        val lineCornerPoints = line.cornerPoints
-//                        val lineFrame = line.boundingBox
                         for (element in line.elements) {
                             val elementText = element.text
-//                            val elementCornerPoints = element.cornerPoints
-//                            val elementFrame = element.boundingBox
                             recognizedStringBuilder.append(elementText).append(" ")
                         }
                         recognizedStringBuilder.appendLine()
                     }
                 }
                 binding.textFromImage.setText(recognizedStringBuilder.toString())
-                binding.sourceLangSelector.setSelection(adapter.getPosition(Language(visionText.textBlocks[0].recognizedLanguage)))
+                try {
+                    binding.sourceLangSelector.setSelection(adapter.getPosition(Language(visionText.textBlocks[0].recognizedLanguage)))
+                }
+                catch (ex : java.lang.Exception)
+                {
+                    Log.d("ImageAnalysisFragment", "detectTextFromImage: No language detected")
+                }
                 recognizedStringBuilder.clear()
             }
             .addOnFailureListener { e ->
                 Log.d("ImageAnalysisFragment", "detectTextFromImage: $e")
+            }
+    }
+
+    private fun detectObjectsFromImage(image : InputImage)
+    {
+        val options = ObjectDetectorOptions.Builder()
+            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
+            .enableMultipleObjects()
+            .enableClassification()  // Optional
+            .build()
+        val objectDetector = ObjectDetection.getClient(options)
+        objectDetector.process(image)
+            .addOnSuccessListener { detectedObjects ->
+                for (detectedObject in detectedObjects) {
+                    for (label in detectedObject.labels) {
+                        recognizedStringBuilder.appendLine(label.text)
+                    }
+
+                }
+                binding.textFromImage.setText(recognizedStringBuilder.toString())
+                recognizedStringBuilder.clear()
+            }
+            .addOnFailureListener { e ->
+                Log.d("Error", "detectObjectsFromImage: $e")
             }
     }
 

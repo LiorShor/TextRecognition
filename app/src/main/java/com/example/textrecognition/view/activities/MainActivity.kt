@@ -3,6 +3,7 @@ package com.example.textrecognition.view.activities
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -52,6 +53,8 @@ class MainActivity : AppCompatActivity(), ICommunicator {
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
+                    binding.loginBT.visibility = View.INVISIBLE
+                    binding.fingerPrintBT.visibility = View.INVISIBLE
                     val editor = prefs?.edit()
                     editor?.putBoolean("Fingerprint", true)
                     editor?.apply()
@@ -59,6 +62,7 @@ class MainActivity : AppCompatActivity(), ICommunicator {
                         .replace(
                             R.id.container,
                             ImageAnalysisFragment()
+
                         )
                         .commitNow()
                 }
@@ -77,6 +81,7 @@ class MainActivity : AppCompatActivity(), ICommunicator {
         translatedTextList: Serializable,
         sourceTextList: Serializable
     ) {
+
         val bundle = Bundle()
         val fragment = HistoryFragment()
         bundle.putBoolean("WithFingerprint", isLoggedInWithFinger)
@@ -88,5 +93,7 @@ class MainActivity : AppCompatActivity(), ICommunicator {
 
     override fun changeFragmentWithoutData() {
         supportFragmentManager.beginTransaction().replace(R.id.container, ImageAnalysisFragment()).commit()
+        binding.loginBT.visibility = View.VISIBLE
+        binding.fingerPrintBT.visibility = View.VISIBLE
     }
 }
