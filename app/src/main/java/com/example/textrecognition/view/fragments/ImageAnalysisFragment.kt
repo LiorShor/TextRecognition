@@ -329,6 +329,7 @@ class ImageAnalysisFragment : Fragment(R.layout.fragment_image_analysis), ImageA
                     }
 
                 }
+                binding.sourceLangSelector.setSelection(adapter.getPosition(Language("en")))
                 binding.textFromImage.setText(recognizedStringBuilder.toString())
                 recognizedStringBuilder.clear()
             }

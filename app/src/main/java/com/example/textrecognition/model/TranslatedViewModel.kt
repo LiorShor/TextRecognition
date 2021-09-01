@@ -23,20 +23,16 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private val modelManager: RemoteModelManager = RemoteModelManager.getInstance()
+    // A cache that holds strong references to a limited number of values. Each time a value is accessed,
+    // it is moved to the head of a queue. When a value is added to a full cache,
+    // the value at the end of that queue is evicted and may become eligible for garbage collection.
     private val translators =
         object : LruCache<TranslatorOptions, Translator>(NUM_TRANSLATORS) {
             override fun create(options: TranslatorOptions): Translator {
                 return Translation.getClient(options)
             }
-            override fun entryRemoved(
-                evicted: Boolean,
-                key: TranslatorOptions,
-                oldValue: Translator,
-                newValue: Translator?
-            ) {
-                oldValue.close()
-            }
         }
+    //LiveData considers an observer, which is represented by the Observer
     val sourceLang = MutableLiveData<Language>()
     val targetLang = MutableLiveData<Language>()
     val sourceText = MutableLiveData<String>()
@@ -99,7 +95,7 @@ class TranslateViewModel(application: Application) : AndroidViewModel(applicatio
             if (task.isSuccessful) {
                 translators[options].translate(text)
             } else {
-                Tasks.forException<String>(
+                Tasks.forException(
                     task.exception
                         ?: Exception()
                 )
