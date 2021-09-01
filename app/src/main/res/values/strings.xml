@@ -9,4 +9,29 @@
     <string name="display_detected_text_from_image">Display detected text from image</string>
     <string name="capture_image">Capture image</string>
     <string name="detect_image">Detect image</string>
+    <string name="floating_button">floating button</string>
+    <string name="enter_text">Enter text</string>
+    <string name="translating">Translating&#8230;</string>
+    <string name="translated_text">Translated Text</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="clear_text_button">Clear text button</string>
+    <string name="login">Login</string>
+    <string name="enter_email">Enter email</string>
+    <string name="enter_password">Enter password</string>
+    <string name="email">Email:</string>
+    <string name="password">Password:</string>
+    <string name="sign_up">Sign up</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="name">Name:</string>
+    <string name="enter_name">Enter name</string>
+    <string name="re_password">Re-Password</string>
+    <string name="register">Register</string>
+    <string name="registration">Registration</string>
+    <string name="recover_password">Recover password</string>
+    <string name="please_enter_your_email">Please enter your email</string>
+    <string name="email_sent">Please check your email</string>
+    <string name="continue_with_email">Continue with Email</string>
+    <string name="continue_with_fingerprint">Continue with Fingerprint</string>
+    <string name="logo">Logo</string>
 </resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.fragments.HistoryFragment"
+    android:background="@drawable/wallpaper">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/historyRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="#39B09B"
+            android:clickable="true"
+            android:contentDescription="@string/floating_button"
+            android:focusable="true"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_add" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/takePhotoFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#39B09B"
+        android:clickable="true"
+        android:contentDescription="@string/floating_button"
+        android:tint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/addFloatingActionButton"
+        app:layout_constraintEnd_toEndOf="@+id/addFloatingActionButton"
+        app:srcCompat="@drawable/ic_add_a_photo" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/clearHistoryFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#39B09B"
+        android:clickable="true"
+        android:contentDescription="@string/floating_button"
+        android:tint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/takePhotoFloatingActionButton"
+        app:layout_constraintEnd_toEndOf="@+id/takePhotoFloatingActionButton"
+        app:srcCompat="@drawable/ic_clear" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/logoutFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#39B09B"
+            android:clickable="true"
+            android:contentDescription="@string/floating_button"
+            android:tint="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/clearHistoryFloatingActionButton"
+            app:layout_constraintEnd_toEndOf="@+id/clearHistoryFloatingActionButton"
+            app:srcCompat="@drawable/ic_logout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

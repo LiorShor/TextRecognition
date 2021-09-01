@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wallpaper">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/cardView2"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/ic_green_translation_icon"
+            android:contentDescription="@string/logo"
+            android:elevation="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </ImageView>
+
+        <Button
+            android:id="@+id/loginBT"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="52dp"
+            android:background="@drawable/buttondesign"
+            android:drawableStart="@drawable/ic_email"
+            android:onClick="executeLoginWithEmail"
+            android:padding="16dp"
+            android:text="@string/continue_with_email"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/fingerPrintBT"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="120dp"
+            android:background="@drawable/buttondesign"
+            android:drawableStart="@drawable/ic_fingerprint"
+            android:onClick="executeLoginWithFingerprint"
+            android:padding="16dp"
+            android:text="@string/continue_with_fingerprint"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView2"
+            app:layout_constraintVertical_bias="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
